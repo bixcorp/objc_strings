@@ -201,10 +201,10 @@ def main():
 
     project_path = None
 
-    if 'PROJECT_DIR' in os.environ:
-        project_path = os.environ['PROJECT_DIR']
-    elif options.project_path:
+    if options.project_path:
         project_path = options.project_path
+    elif 'PROJECT_DIR' in os.environ:
+        project_path = os.environ['PROJECT_DIR']
 
     show_untranslated_keys_in_project(project_path, options.exclude_dirs)
 
