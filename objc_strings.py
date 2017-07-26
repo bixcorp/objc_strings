@@ -29,7 +29,7 @@ import sys
 import os
 import re
 import codecs
-import optparse
+import argparse
 
 def warning(file_path, line_number, message):
     print "%s:%d: warning: %s" % (file_path, line_number, message.encode("utf8"))
@@ -194,10 +194,11 @@ def show_untranslated_keys_in_project(project_path, exclude_dirs):
 
 def main():
 
-    p = optparse.OptionParser()
-    p.add_option('--project-path', '-p', dest="project_path")
-    p.add_option('--exclude-dirs', '-e', type="string", default=[], dest="exclude_dirs")
-    options, arguments = p.parse_args()
+    p = argparse.ArgumentParser(description='Parse strings')
+    p.add_argument("-p", "--project_path", type=str, help="Project path to parse.")
+    p.add_argument("-e", "--exclude-dirs", default=[], type=str, nargs='*', help="Directories to exclude.")
+
+    options = p.parse_args()
 
     project_path = None
 
