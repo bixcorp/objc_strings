@@ -195,7 +195,7 @@ def show_untranslated_keys_in_project(project_path, exclude_dirs):
 def main():
 
     p = argparse.ArgumentParser(description='Parse strings')
-    p.add_argument("-p", "--project_path", type=str, help="Project path to parse.")
+    p.add_argument("-p", "--project-path", type=str, help="Project path to parse.")
     p.add_argument("-e", "--exclude-dirs", default=[], type=str, nargs='*', help="Directories to exclude.")
 
     options = p.parse_args()
