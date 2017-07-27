@@ -163,8 +163,12 @@ def keys_set_in_code_at_path(path, exclude_dirs):
 def show_untranslated_keys_in_project(project_path, exclude_dirs):
 
     if not project_path or not os.path.exists(project_path):
-        error("", 0, "bad project path:%s" % project_path)
-        return
+        project_file_path = ""
+        if 'PROJECT_FILE_PATH' in os.environ:
+            project_file_path = os.environ['PROJECT_FILE_PATH']
+
+        error(project_file_path, 0, "bad project path:%s" % project_path)
+        sys.exit(1)
 
     keys_set_in_code = keys_set_in_code_at_path(project_path, exclude_dirs)
 
