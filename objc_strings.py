@@ -14,7 +14,7 @@ Output:
     2) warnings for unused keys in Localization.strings
     3) errors for keys defined twice or more in the same .strings file
 
-Typical usage: $ python objc_strings.py /path/to/obj_c/project
+Typical usage: $ python objc_strings.py -p /path/to/obj_c/project
 
 Xcode integration:
     1. make `objc_strings.py` executable
