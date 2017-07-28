@@ -30,6 +30,7 @@ import os
 import re
 import codecs
 import argparse
+import plistlib
 
 def warning(file_path, line_number, message):
     print "%s:%d: warning: %s" % (file_path, line_number, message.encode("utf8"))
@@ -160,7 +161,7 @@ def keys_set_in_code_at_path(path, exclude_dirs):
 
     return localized_strings
 
-def show_untranslated_keys_in_project(project_path, exclude_dirs):
+def show_untranslated_keys_in_project(project_path, exclude_dirs, project_language):
 
     if not project_path or not os.path.exists(project_path):
         project_file_path = ""
@@ -183,12 +184,17 @@ def show_untranslated_keys_in_project(project_path, exclude_dirs):
         unused_keys = keys_set_in_strings - keys_set_in_code
 
         language_code = language_code_in_strings_path(p)
+        language_code_short = language_code[:-6]
 
         for k in missing_keys:
             message = "missing key in %s: \"%s\"" % (language_code, unicode(k, 'utf-8'))
+            error_message = "missing key in %s (default region): \"%s\"" % (language_code, unicode(k, 'utf-8'))
 
             for (p_, n) in m_paths_and_line_numbers_for_key[k]:
-                warning(p_, n, message)
+                if language_code_short == project_language:
+                    error(p_, n, error_message)
+                else:
+                    warning(p_, n, message)
 
         for k in unused_keys:
             message = "unused key in %s: \"%s\"" % (language_code, k)
@@ -202,6 +208,10 @@ def main():
     p.add_argument("-p", "--project-path", type=str, help="Project path to parse.")
     p.add_argument("-e", "--exclude-dirs", default=[], type=str, nargs='*', help="Directories to exclude.")
 
+    # Read default language from Info.plist
+    pl = plistlib.readPlist(os.environ['PRODUCT_SETTINGS_PATH'])
+    project_language = pl["CFBundleDevelopmentRegion"]
+
     options = p.parse_args()
 
     project_path = None
@@ -211,7 +221,7 @@ def main():
     elif 'PROJECT_DIR' in os.environ:
         project_path = os.environ['PROJECT_DIR']
 
-    show_untranslated_keys_in_project(project_path, options.exclude_dirs)
+    show_untranslated_keys_in_project(project_path, options.exclude_dirs, project_language)
 
 if __name__ == "__main__":
     main()
