@@ -184,14 +184,16 @@ def show_untranslated_keys_in_project(project_path, exclude_dirs, project_langua
         unused_keys = keys_set_in_strings - keys_set_in_code
 
         language_code = language_code_in_strings_path(p)
-        language_code_short = language_code[:-6]
+        throw_error = language_code[:-6] == project_language
+        exit_after_error = False;
 
         for k in missing_keys:
             message = "missing key in %s: \"%s\"" % (language_code, unicode(k, 'utf-8'))
             error_message = "missing key in %s (default region): \"%s\"" % (language_code, unicode(k, 'utf-8'))
 
             for (p_, n) in m_paths_and_line_numbers_for_key[k]:
-                if language_code_short == project_language:
+                if throw_error:
+                    exit_after_error = True
                     error(p_, n, error_message)
                 else:
                     warning(p_, n, message)
@@ -201,6 +203,9 @@ def show_untranslated_keys_in_project(project_path, exclude_dirs, project_langua
 
             for (p, n) in s_paths_and_line_numbers_for_key[k]:
                 warning(p, n, message)
+
+        if exit_after_error:
+            sys.exit(1)
 
 def main():
 
